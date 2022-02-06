@@ -1,9 +1,7 @@
-import numpy as np
 import aiohttp
 import asyncio
 import simpleobsws
 import time
-from PIL import Image
 import pytesseract
 import json
 import cv2
@@ -474,14 +472,11 @@ def ocrSCOREBOARD(MAP, IMG):
                 if team_POS == team_num:
                     for key, value in stat_pos.items():
                         if key == 'team':
-                            update = {key: value}
-                            temp_stat_dump.update(update)
+                            temp_stat_dump.update({key: value})
                             continue
                         stat = ocr_process(value, ocrCONFIG_NUM)
-                        update = {key: stat}
-                        temp_stat_dump.update(update)
-                    update = {name: temp_stat_dump}
-                    scoreboard_STATS.update(update)
+                        temp_stat_dump.update({key: stat})
+                    scoreboard_STATS.update({name: temp_stat_dump})
 
         elif MAP in capture_point_list:
             for team_num, stat_pos in ocrCAPOINT_NUM.items():
@@ -489,21 +484,17 @@ def ocrSCOREBOARD(MAP, IMG):
                 if team_POS == team_num:
                     for key, value in stat_pos.items():
                         if key == 'team':
-                            update = {key: value}
-                            temp_stat_dump.update(update)
+                            temp_stat_dump.update({key: value})
                             continue
                         stat = ocr_process(value, ocrCONFIG_NUM)
-                        update = {key: stat}
-                        temp_stat_dump.update(update)
-                    update = {name: temp_stat_dump}
-                    scoreboard_STATS.update(update)
+                        temp_stat_dump.update({key: stat})
+                    scoreboard_STATS.update({name: temp_stat_dump})
 
     for ocnames, stats in scoreboard_STATS.items():
         newname = closeMatches(apiNAMES, ocnames)
         if not newname:
             continue
-        update = {newname[0]: stats}
-        tmp_rename.update(update)
+        tmp_rename.update({newname[0]: stats})
 
 
 def ocrPERSONALSTATS():
@@ -520,16 +511,13 @@ def ocrPERSONALSTATS():
                 name = ocr_process(img_value, ocrCONFIG)
                 for pl_stats, img_val in ocrPLAY_STATS.items():
                     ocr_stat = ocr_process(img_val, ocrCONFIG_NUM)
-                    update = {pl_stats: ocr_stat}
-                    tmp_stat.update(update)
-                update = {name: tmp_stat}
-                playstats_combine.update(update)
+                    tmp_stat.update({pl_stats: ocr_stat})
+                playstats_combine.update({name: tmp_stat})
     for ocrnames, stats in playstats_combine.items():
         newname = closeMatches(apiNAMES, ocrnames)
         if not newname:
             continue
-        update = {newname[0]: stats}
-        tmp_renam2.update(update)
+        tmp_renam2.update({newname[0]: stats})
 
 
 async def war_room():
@@ -554,42 +542,33 @@ async def war_room():
                         team = teamIndex
                         arraypos = teamPlayer
                         warROOM = 176.90 <= x <= 199.10 and -16.70 <= y <= -7.85 and 16.70 <= z <= 46.70
-                        update = {userid: warROOM}
-                        fix.update(update)
+                        fix.update({userid: warROOM})
                         if team == 0:
                             if arraypos == 0:
                                 numbers = 6
-                                update = {name: {'userid': userid, 'num': numbers, 'team': team}}
-                                newstatDICT.update(update)
+                                newstatDICT.update({name: {'userid': userid, 'num': numbers, 'team': team}})
                             elif arraypos == 1:
                                 numbers = 7
-                                update = {name: {'userid': userid, 'num': numbers, 'team': team}}
-                                newstatDICT.update(update)
+                                newstatDICT.update({name: {'userid': userid, 'num': numbers, 'team': team}})
                             elif arraypos == 2:
                                 numbers = 8
-                                update = {name: {'userid': userid, 'num': numbers, 'team': team}}
-                                newstatDICT.update(update)
+                                newstatDICT.update({name: {'userid': userid, 'num': numbers, 'team': team}})
                             elif arraypos == 3:
                                 numbers = 9
-                                update = {name: {'userid': userid, 'num': numbers, 'team': team}}
-                                newstatDICT.update(update)
+                                newstatDICT.update({name: {'userid': userid, 'num': numbers, 'team': team}})
                         elif team == 1:
                             if arraypos == 0:
                                 numbers = 1
-                                update = {name: {'userid': userid, 'num': numbers, 'team': team}}
-                                newstatDICT.update(update)
+                                newstatDICT.update({name: {'userid': userid, 'num': numbers, 'team': team}})
                             elif arraypos == 1:
                                 numbers = 2
-                                update = {name: {'userid': userid, 'num': numbers, 'team': team}}
-                                newstatDICT.update(update)
+                                newstatDICT.update({name: {'userid': userid, 'num': numbers, 'team': team}})
                             elif arraypos == 2:
                                 numbers = 3
-                                update = {name: {'userid': userid, 'num': numbers, 'team': team}}
-                                newstatDICT.update(update)
+                                newstatDICT.update({name: {'userid': userid, 'num': numbers, 'team': team}})
                             elif arraypos == 3:
                                 numbers = 4
-                                update = {name: {'userid': userid, 'num': numbers, 'team': team}}
-                                newstatDICT.update(update)
+                                newstatDICT.update({name: {'userid': userid, 'num': numbers, 'team': team}})
         if all(value == 1 for value in fix.values()):
             return True
         else:
@@ -621,6 +600,7 @@ async def camera_control():
                         if await war_room():
                             for mapNAME, DATA in mapDATA.items():
                                 if mapNAME == apiData['map_name']:
+                                    screenTAKEN = True
                                     await posting_api(session, "http://127.0.0.1:6721/camera_transform", DATA)
                                     data = {'enabled': False}
                                     await posting_api(session, "http://127.0.0.1:6721/ui_visibility", json.dumps(data))
@@ -638,8 +618,7 @@ async def camera_control():
                                             if k == 'num':
                                                 player_timeSCSHOT = time.time()
                                                 player_nameSCSHOT = f'{matchID}-{player_timeSCSHOT}'
-                                                update = {name: {'img': player_nameSCSHOT}}
-                                                playerSTAT.update(update)
+                                                playerSTAT.update({name: {'img': player_nameSCSHOT}})
                                                 data = {'mode': 'pov', 'num': v}
                                                 await posting_api(session, "http://127.0.0.1:6721/camera_mode",
                                                                   json.dumps(data))
@@ -650,7 +629,6 @@ async def camera_control():
                                                                'saveToFilePath': f'C:/Users/dualg/Documents/echo-py/{player_nameSCSHOT}.png'})
                                     img = cv2.imread(f'{nameSCSHOT}.png')
                                     image = f'{nameSCSHOT}.png'
-                                    
                                     ocrSCOREBOARD(mapNAME, image)
                                     ocrPERSONALSTATS()
                                     for key in scoreboard_STATS:
@@ -660,6 +638,8 @@ async def camera_control():
                                     for key in tmp_renam2:
                                         if key in tmp_rename:
                                             tmp_renam2[key].update(tmp_rename[key])
+                                    #something breaks here and wont generate the scoreboard
+                                    #might be something specific with capture point
                                     if mapNAME in payload_list:
                                         createstats_payload(mapNAME)
                                         print('payload ', apiData['map_name'])
@@ -667,7 +647,6 @@ async def camera_control():
                                         createstats_capture_point(mapNAME)
                                         print('capture point ', apiData['map_name'])
                                     await ws.disconnect()
-                                    screenTAKEN = True
                                     break
                                 else:
                                     print(f'not this map {mapNAME}')
@@ -676,6 +655,7 @@ async def camera_control():
                     screenTAKEN = False
                     newstatDICT.clear()
                     playerSTAT.clear()
+                    playstats_combine.clear()
                     scoreboard_STATS.clear()
                     apiNAMES.clear()
                     tmp_rename.clear()
