@@ -540,33 +540,32 @@ async def war_room():
                         apiNAMES.append(name)
                         userid = teamPlayers[teamPlayer]['userid']
                         team = teamIndex
-                        arraypos = teamPlayer
                         warROOM = 176.90 <= x <= 199.10 and -16.70 <= y <= -7.85 and 16.70 <= z <= 46.70
                         fix.update({userid: warROOM})
                         if team == 0:
-                            if arraypos == 0:
+                            if teamPlayer == 0:
                                 numbers = 6
                                 newstatDICT.update({name: {'userid': userid, 'num': numbers, 'team': team}})
-                            elif arraypos == 1:
+                            elif teamPlayer == 1:
                                 numbers = 7
                                 newstatDICT.update({name: {'userid': userid, 'num': numbers, 'team': team}})
-                            elif arraypos == 2:
+                            elif teamPlayer == 2:
                                 numbers = 8
                                 newstatDICT.update({name: {'userid': userid, 'num': numbers, 'team': team}})
-                            elif arraypos == 3:
+                            elif teamPlayer == 3:
                                 numbers = 9
                                 newstatDICT.update({name: {'userid': userid, 'num': numbers, 'team': team}})
                         elif team == 1:
-                            if arraypos == 0:
+                            if teamPlayer == 0:
                                 numbers = 1
                                 newstatDICT.update({name: {'userid': userid, 'num': numbers, 'team': team}})
-                            elif arraypos == 1:
+                            elif teamPlayer == 1:
                                 numbers = 2
                                 newstatDICT.update({name: {'userid': userid, 'num': numbers, 'team': team}})
-                            elif arraypos == 2:
+                            elif teamPlayer == 2:
                                 numbers = 3
                                 newstatDICT.update({name: {'userid': userid, 'num': numbers, 'team': team}})
-                            elif arraypos == 3:
+                            elif teamPlayer == 3:
                                 numbers = 4
                                 newstatDICT.update({name: {'userid': userid, 'num': numbers, 'team': team}})
         if all(value == 1 for value in fix.values()):
