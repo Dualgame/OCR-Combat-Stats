@@ -425,45 +425,45 @@ def ocrSCOREBOARD(MAP, IMG):
                            'obj.time': img[695:695 + 47, 1065:1065 + 140],
                            'team': 1}}
     ocrCAPOINT_NUM = {
-        'blue 1': {'blue 1 elim': img[242:242 + 47, 695:695 + 84],
-                   'blue 1 obj.elim': img[242:242 + 47, 811:811 + 105],
-                   'blue 1 obj.time': img[242:242 + 47, 955:955 + 120],
-                   'blue 1 obj.dmg': img[242:242 + 47, 1097:1097 + 120]},
+        'blue 1': {'elim': img[242:242 + 47, 695:695 + 84],
+                   'obj.elim': img[242:242 + 47, 811:811 + 105],
+                   'obj.time': img[242:242 + 47, 955:955 + 120],
+                   'obj.dmg': img[242:242 + 47, 1097:1097 + 120]},
         'blue 2':
-            {'blue 2 elim': img[292:292 + 47, 695:695 + 84],
-             'blue 2 obj.elim': img[292:292 + 47, 811:811 + 105],
-             'blue 2 obj.time': img[292:292 + 47, 955:955 + 120],
-             'blue 2 obj.dmg': img[292:292 + 47, 1097:1097 + 120]},
+            {'elim': img[292:292 + 47, 695:695 + 84],
+             'obj.elim': img[292:292 + 47, 811:811 + 105],
+             'obj.time': img[292:292 + 47, 955:955 + 120],
+             'obj.dmg': img[292:292 + 47, 1097:1097 + 120]},
         'blue 3':
-            {'blue 3 elim': img[340:340 + 47, 695:695 + 84],
-             'blue 3 obj.elim': img[340:340 + 47, 811:811 + 105],
-             'blue 3 obj.time': img[340:340 + 47, 955:955 + 120],
-             'blue 3 obj.dmg': img[340:340 + 47, 1097:1097 + 120]},
+            {'elim': img[340:340 + 47, 695:695 + 84],
+             'obj.elim': img[340:340 + 47, 811:811 + 105],
+             'obj.time': img[340:340 + 47, 955:955 + 120],
+             'obj.dmg': img[340:340 + 47, 1097:1097 + 120]},
         'blue 4':
-            {'blue 4 elim': img[388:388 + 47, 695:695 + 84],
-             'blue 4 obj.elim': img[388:388 + 47, 811:811 + 105],
-             'blue 4 obj.time': img[388:388 + 47, 955:955 + 120],
-             'blue 4 obj.dmg': img[388:388 + 47, 1097:1097 + 120]},
+            {'elim': img[388:388 + 47, 695:695 + 84],
+             'obj.elim': img[388:388 + 47, 811:811 + 105],
+             'obj.time': img[388:388 + 47, 955:955 + 120],
+             'obj.dmg': img[388:388 + 47, 1097:1097 + 120]},
         'orange 1':
-            {'orange 1 elim': img[550:550 + 47, 695:695 + 84],
-             'orange 1 obj.elim': img[550:550 + 47, 811:811 + 105],
-             'orange 1 obj.time': img[550:550 + 47, 955:955 + 120],
-             'orange 1 obj.dmg': img[550:550 + 47, 1097:1097 + 120]},
+            {'elim': img[550:550 + 47, 695:695 + 84],
+             'obj.elim': img[550:550 + 47, 811:811 + 105],
+             'obj.time': img[550:550 + 47, 955:955 + 120],
+             'obj.dmg': img[550:550 + 47, 1097:1097 + 120]},
         'orange 2':
-            {'orange 2 elim': img[598:598 + 47, 695:695 + 84],
-             'orange 2 obj.elim': img[598:598 + 47, 811:811 + 105],
-             'orange 2 obj.time': img[598:598 + 47, 955:955 + 120],
-             'orange 2 obj.dmg': img[598:598 + 47, 1097:1097 + 120]},
+            {'elim': img[598:598 + 47, 695:695 + 84],
+             'obj.elim': img[598:598 + 47, 811:811 + 105],
+             'obj.time': img[598:598 + 47, 955:955 + 120],
+             'obj.dmg': img[598:598 + 47, 1097:1097 + 120]},
         'orange 3':
-            {'orange 3 elim': img[645:645 + 47, 695:695 + 84],
-             'orange 3 obj.elim': img[645:645 + 47, 811:811 + 105],
-             'orange 3 obj.time': img[645:645 + 47, 955:955 + 120],
-             'orange 3 obj.dmg': img[645:645 + 47, 1097:1097 + 120]},
+            {'elim': img[645:645 + 47, 695:695 + 84],
+             'obj.elim': img[645:645 + 47, 811:811 + 105],
+             'obj.time': img[645:645 + 47, 955:955 + 120],
+             'obj.dmg': img[645:645 + 47, 1097:1097 + 120]},
         'orange 4':
-            {'orange 4 elim': img[695:695 + 47, 695:695 + 84],
-             'orange 4 obj.elim': img[695:695 + 47, 811:811 + 105],
-             'orange 4 obj.time': img[695:695 + 47, 955:955 + 120],
-             'orange 4 obj.dmg': img[695:695 + 47, 1097:1097 + 120]}}
+            {'elim': img[695:695 + 47, 695:695 + 84],
+             'obj.elim': img[695:695 + 47, 811:811 + 105],
+             'obj.time': img[695:695 + 47, 955:955 + 120],
+             'obj.dmg': img[695:695 + 47, 1097:1097 + 120]}}
     payload_list = ['mpl_combat_gauss', 'mpl_combat_fission']
     capture_point_list = ['mpl_combat_dyson', 'mpl_combat_combustion']
     for team_POS, cords in ocrONLY_NAME.items():
