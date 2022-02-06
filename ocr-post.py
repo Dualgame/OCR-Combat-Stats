@@ -1,11 +1,11 @@
 import aiohttp
 import asyncio
 import simpleobsws
+import os
 import time
 import pytesseract
 import json
 import cv2
-from pytesseract import Output
 from difflib import get_close_matches
 
 
@@ -570,6 +570,7 @@ async def camera_control():
     screenTAKEN = False
     payload_list = ['mpl_combat_gauss', 'mpl_combat_fission']
     capture_point_list = ['mpl_combat_dyson', 'mpl_combat_combustion']
+    dir_location = os.getcwd()
     mapDATA = {'mpl_combat_gauss': '{\"px\" : 187.951, \"py\" : -11.085, \"pz\" : 44.0900004,\"fovy\" : 1.6}',
                'mpl_combat_fission': '{\"px\" : 187.97, \"py\" : -10.73, \"pz\" : 44.0900004,\"fovy\" : 1.6}',
                'mpl_combat_dyson': '{\"px\" : 187.968, \"py\" : -11.186001, \"pz\" : 44.0900004,\"fovy\" : 1.6}',
@@ -600,7 +601,7 @@ async def camera_control():
                                     nameSCSHOT = f'{matchID}-{timeSCSHOT}'
                                     await ws.call('TakeSourceScreenshot',
                                                   {"sourceName": "Game Capture", "embedPictureFormat": "png",
-                                                   'saveToFilePath': f'C:/Users/dualg/Documents/echo-py/{nameSCSHOT}.png'})
+                                                   'saveToFilePath': f'{dir_location}/{nameSCSHOT}.png'})
                                     data = {'enabled': True}
                                     await posting_api(session, "http://127.0.0.1:6721/ui_visibility", json.dumps(data))
                                     for name, info in newstatDICT.items():
@@ -616,7 +617,8 @@ async def camera_control():
                                                 await ws.call('TakeSourceScreenshot',
                                                               {"sourceName": "Game Capture",
                                                                "embedPictureFormat": "png",
-                                                               'saveToFilePath': f'C:/Users/dualg/Documents/echo-py/{player_nameSCSHOT}.png'})
+                                                               'saveToFilePath': f'{dir_location}/{player_nameSCSHOT}.png'})
+				    await ws.disconnect()
                                     image = f'{nameSCSHOT}.png'
                                     ocrSCOREBOARD(mapNAME, image)
                                     ocrPERSONALSTATS()
@@ -635,7 +637,6 @@ async def camera_control():
                                     elif mapNAME in capture_point_list:
                                         createstats_capture_point(mapNAME)
                                         print('capture point ', apiData['map_name'])
-                                    await ws.disconnect()
                                     break
                                 else:
                                     print(f'not this map {mapNAME}')
