@@ -10,6 +10,6 @@ Requirments:
 
 * [Echo VR](https://www.oculus.com/experiences/rift/1369078409873402/)
 
-Lanch Echo VR into spectator view in any public (-spectatorstream echo_combat) or private match (-spectatorstream -lobbyid "") and run the script. Current obs websocket port is hardcoded to 4450 with no password. 
+Launch Echo VR into spectator view in any public (-spectatorstream echo_combat) or private match (-spectatorstream -lobbyid "") and run the script. Current obs websocket port is hardcoded to 4450 with no password. 
 
 
