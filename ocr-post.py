@@ -617,7 +617,6 @@ async def camera_control():
                                                               {"sourceName": "Game Capture",
                                                                "embedPictureFormat": "png",
                                                                'saveToFilePath': f'C:/Users/dualg/Documents/echo-py/{player_nameSCSHOT}.png'})
-                                    img = cv2.imread(f'{nameSCSHOT}.png')
                                     image = f'{nameSCSHOT}.png'
                                     ocrSCOREBOARD(mapNAME, image)
                                     ocrPERSONALSTATS()
