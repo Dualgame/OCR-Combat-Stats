@@ -374,7 +374,7 @@ def createstats_capture_point(mapname):
 
 def ocrSCOREBOARD(MAP, IMG):
     img = cv2.imread(IMG)
-    ocrONLY_NAME = {'blue 1': img[240:240 + 50, 280:280 + 415],
+    ocrONLY_NAME_DONT_USE = {'blue 1': img[240:240 + 50, 280:280 + 415],
                     'blue 2': img[289:289 + 50, 280:280 + 415],
                     'blue 3': img[338:338 + 50, 280:280 + 415],
                     'blue 4': img[388:388 + 50, 280:280 + 415],
@@ -382,7 +382,15 @@ def ocrSCOREBOARD(MAP, IMG):
                     'orange 2': img[596:596 + 50, 280:280 + 415],
                     'orange 3': img[645:645 + 50, 280:280 + 415],
                     'orange 4': img[694:694 + 50, 280:280 + 415]}
-    ocrPAYLOAD_NUM = {'blue 1':
+    ocrONLY_NAME_16x9 = {'blue 1': img[300:300 + 56, 355:355 + 510],
+                         'blue 2': img[362:362 + 56, 355:355 + 510],
+                         'blue 3': img[420:420 + 56, 355:355 + 510],
+                         'blue 4': img[480:480 + 56, 355:355 + 510],
+                         'orange 1': img[681:681 + 56, 355:355 + 510],
+                         'orange 2': img[740:740 + 56, 355:355 + 510],
+                         'orange 3': img[800:800 + 56, 355:355 + 510],
+                         'orange 4': img[860:860 + 56, 355:355 + 510]}
+    ocrPAYLOAD_NUM_DONT_USE = {'blue 1':
                           {'elim': img[242:242 + 47, 695:695 + 84],
                            'obj.elim': img[242:242 + 47, 900:900 + 110],
                            'obj.dmg': img[242:242 + 47, 1065:1065 + 140],
@@ -422,7 +430,47 @@ def ocrSCOREBOARD(MAP, IMG):
                            'obj.elim': img[695:695 + 47, 900:900 + 110],
                            'obj.time': img[695:695 + 47, 1065:1065 + 140],
                            'team': 1}}
-    ocrCAPOINT_NUM = {
+    ocrPAYLOAD_NUM_16x9 = {'blue 1':
+                               {'elim': img[302:302 + 55, 879:879 + 90],
+                                'obj.elim': img[302:302 + 55, 1130:1130 + 125],
+                                'obj.dmg': img[302:302 + 55, 1333:1333 + 147],
+                                'team': 0},
+                           'blue 2':
+                               {'elim': img[362:362 + 56, 879:879 + 90],
+                                'obj.elim': img[362:362 + 56, 1130:1130 + 125],
+                                'obj.dmg': img[362:362 + 56, 1333:1333 + 147],
+                                'team': 0},
+                           'blue 3':
+                               {'elim': img[420:420 + 56, 879:879 + 90],
+                                'obj.elim': img[420:420 + 56, 1130:1130 + 125],
+                                'obj.dmg': img[420:420 + 56, 1333:1333 + 147],
+                                'team': 0},
+                           'blue 4':
+                               {'elim': img[480:480 + 56, 879:879 + 90],
+                                'obj.elim': img[480:480 + 56, 1130:1130 + 125],
+                                'obj.dmg': img[480:480 + 56, 1333:1333 + 147],
+                                'team': 0},
+                           'orange 1':
+                               {'elim': img[681:681 + 56, 879:879 + 90],
+                                'obj.elim': img[681:681 + 56, 1130:1130 + 125],
+                                'obj.time': img[681:681 + 56, 1333:1333 + 147],
+                                'team': 1},
+                           'orange 2':
+                               {'elim': img[740:740 + 56, 879:879 + 90],
+                                'obj.elim': img[740:740 + 56, 1130:1130 + 125],
+                                'obj.time': img[740:740 + 56, 1333:1333 + 147],
+                                'team': 1},
+                           'orange 3':
+                               {'elim': img[800:800 + 56, 879:879 + 90],
+                                'obj.elim': img[800:800 + 56, 1130:1130 + 125],
+                                'obj.time': img[800:800 + 56, 1333:1333 + 147],
+                                'team': 1},
+                           'orange 4':
+                               {'elim': img[860:860 + 56, 879:879 + 90],
+                                'obj.elim': img[860:860 + 56, 1130:1130 + 125],
+                                'obj.time': img[860:860 + 56, 1333:1333 + 147],
+                                'team': 1}}
+    ocrCAPOINT_NUM_DONT_USE = {
         'blue 1': {'elim': img[242:242 + 47, 695:695 + 84],
                    'obj.elim': img[242:242 + 47, 811:811 + 105],
                    'obj.time': img[242:242 + 47, 955:955 + 120],
@@ -469,12 +517,59 @@ def ocrSCOREBOARD(MAP, IMG):
              'obj.elim': img[695:695 + 47, 811:811 + 105],
              'obj.time': img[695:695 + 47, 955:955 + 120],
              'obj.dmg': img[695:695 + 47, 1097:1097 + 120], 'team': 1}}
+    ocrCAPOINT_NUM_16x9 = {
+        'blue 1': {'elim': img[300:300 + 56, 869:869 + 77],
+                   'obj.elim': img[300:300 + 56, 1040:1040 + 87],
+                   'obj.time': img[300:300 + 56, 1191:1191 + 150],
+                   'obj.dmg': img[300:300 + 56, 1378:1378 + 120],
+                   'team': 0},
+        'blue 2':
+            {'elim': img[362:362 + 56, 869:869 + 77],
+             'obj.elim': img[362:362 + 56, 1040:1040 + 87],
+             'obj.time': img[362:362 + 56, 1191:1191 + 150],
+             'obj.dmg': img[362:362 + 56, 1378:1378 + 120],
+             'team': 0},
+        'blue 3':
+            {'elim': img[420:420 + 56, 869:869 + 77],
+             'obj.elim': img[420:420 + 56, 1040:1040 + 87],
+             'obj.time': img[420:420 + 56, 1191:1191 + 150],
+             'obj.dmg': img[420:420 + 56, 1378:1378 + 120],
+             'team': 0},
+        'blue 4':
+            {'elim': img[480:480 + 56, 869:869 + 77],
+             'obj.elim': img[480:480 + 56, 1040:1040 + 87],
+             'obj.time': img[480:480 + 56, 1191:1191 + 150],
+             'obj.dmg': img[480:480 + 56, 1378:1378 + 120],
+             'team': 0},
+        'orange 1':
+            {'elim': img[681:681 + 56, 869:869 + 77],
+             'obj.elim': img[681:681 + 56, 1040:1040 + 87],
+             'obj.time': img[681:681 + 56, 1191:1191 + 150],
+             'obj.dmg': img[681:681 + 56, 1378:1378 + 120],
+             'team': 1},
+        'orange 2':
+            {'elim': img[740:740 + 56, 869:869 + 77],
+             'obj.elim': img[740:740 + 56, 1040:1040 + 87],
+             'obj.time': img[740:740 + 56, 1191:1191 + 150],
+             'obj.dmg': img[740:740 + 56, 1378:1378 + 120],
+             'team': 1},
+        'orange 3':
+            {'elim': img[800:800 + 56, 869:869 + 77],
+             'obj.elim': img[800:800 + 56, 1040:1040 + 87],
+             'obj.time': img[800:800 + 56, 1191:1191 + 150],
+             'obj.dmg': img[800:800 + 56, 1378:1378 + 120],
+             'team': 1},
+        'orange 4':
+            {'elim': img[860:860 + 56, 869:869 + 77],
+             'obj.elim': img[860:860 + 56, 1040:1040 + 87],
+             'obj.time': img[860:860 + 56, 1191:1191 + 150],
+             'obj.dmg': img[860:860 + 56, 1378:1378 + 120], 'team': 1}}
     payload_list = ['mpl_combat_gauss', 'mpl_combat_fission']
     capture_point_list = ['mpl_combat_dyson', 'mpl_combat_combustion']
-    for team_POS, cords in ocrONLY_NAME.items():
+    for team_POS, cords in ocrONLY_NAME_16x9.items():
         name = ocr_process(cords, ocrCONFIG)
         if MAP in payload_list:
-            for team_num, stat_pos in ocrPAYLOAD_NUM.items():
+            for team_num, stat_pos in ocrPAYLOAD_NUM_16x9.items():
                 temp_stat_dump = {}
                 if team_POS == team_num:
                     for key, value in stat_pos.items():
@@ -486,7 +581,7 @@ def ocrSCOREBOARD(MAP, IMG):
                     scoreboard_STATS.update({name: temp_stat_dump})
 
         elif MAP in capture_point_list:
-            for team_num, stat_pos in ocrCAPOINT_NUM.items():
+            for team_num, stat_pos in ocrCAPOINT_NUM_16x9.items():
                 temp_stat_dump = {}
                 if team_POS == team_num:
                     for key, value in stat_pos.items():
@@ -509,14 +604,19 @@ def ocrPERSONALSTATS():
         for kv, sv in namdata.items():
             tmp_stat = {}
             img = cv2.imread(f'{sv}.png')
-            ocrPLAY_STATS = {'kills': img[818:818 + 54, 30:30 + 180],
+            ocrPLAY_STATS_DONT_USE = {'kills': img[818:818 + 54, 30:30 + 180],
                              'assists': img[818:818 + 54, 210:210 + 180],
                              'deaths': img[831:831 + 32, 391:391 + 165],
                              'damage': img[831:831 + 32, 564:564 + 165]}
-            ocrPLAY_STATS_NAME = {'name': img[775:775 + 33, 175:175 + 205]}
-            for stat_name, img_value in ocrPLAY_STATS_NAME.items():
-                name = ocr_process(img_value, ocrCONFIG)
-                for pl_stats, img_val in ocrPLAY_STATS.items():
+            ocrPLAY_STATS_16x9 = {'kills': img[1026:1026 + 40, 58:58 + 204],
+                             'assists': img[1026:1026 + 40, 274:274 + 204],
+                             'deaths': img[1026:1026 + 40, 490:490 + 204],
+                             'damage': img[1026:1026 + 40, 706:706 + 204]}
+            ocrPLAY_STATS_NAME_DONT_USE = {'name': img[775:775 + 33, 175:175 + 205]}
+            ocrPLAY_STATS_NAME_16x9 = {'name': img[960:960 + 37, 219:219 + 249]}
+            for stat_name, img_value in ocrPLAY_STATS_NAME_16x9.items():
+                name = ocr_process_playerSTATS(img_value, ocrCONFIG)
+                for pl_stats, img_val in ocrPLAY_STATS_16x9.items():
                     ocr_stat = ocr_process(img_val, ocrCONFIG_NUM)
                     tmp_stat.update({pl_stats: ocr_stat})
                 playstats_combine.update({name: tmp_stat})
@@ -527,6 +627,16 @@ def ocrPERSONALSTATS():
         tmp_renam2.update({newname[0]: stats})
 
 
+def create_folders():
+    dir_location = os.getcwd()
+    folder_dir = {'mpl_combat_gauss': f'{dir_location}/gauss', 'mpl_combat_fission': f'{dir_location}/fission',
+                  'mpl_combat_dyson': f'{dir_location}/dyson', 'mpl_combat_combustion': f'{dir_location}/combustion'}
+    for folder in folder_dir.values():
+        exists = os.path.exists(folder)
+        if not exists:
+            os.makedirs(folder)	
+
+	
 async def war_room():
     fix = {}
     async with aiohttp.ClientSession() as session:
@@ -636,8 +746,6 @@ async def camera_control():
                                     for key in tmp_renam2:
                                         if key in tmp_rename:
                                             tmp_renam2[key].update(tmp_rename[key])
-                                    #something breaks here and wont generate the scoreboard
-                                    #might be something specific with capture point
                                     if mapNAME in payload_list:
                                         createstats_payload(mapNAME)
                                         print('payload ', apiData['map_name'])
@@ -657,7 +765,7 @@ async def camera_control():
                     apiNAMES.clear()
                     tmp_rename.clear()
                     tmp_renam2.clear()
-                    await asyncio.sleep(5)
+                    await asyncio.sleep(10)
 
             except KeyError:
                 pass
