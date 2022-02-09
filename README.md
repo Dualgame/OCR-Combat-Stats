@@ -1,6 +1,6 @@
 # OCR-Combat-Stats
 
-Requirments:
+Requirements:
 
 * [OBS](https://obsproject.com/)
 
