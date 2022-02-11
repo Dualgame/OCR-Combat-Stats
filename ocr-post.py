@@ -3,6 +3,7 @@ import aiohttp
 import asyncio
 import simpleobsws
 from pathlib import Path
+import os
 import time
 import pytesseract
 import json
@@ -771,7 +772,8 @@ async def camera_control():
     screenTAKEN = False
     payload_list = ['mpl_combat_gauss', 'mpl_combat_fission']
     capture_point_list = ['mpl_combat_dyson', 'mpl_combat_combustion']
-
+    folder_dir = {'mpl_combat_gauss': f'{os.getcwd()}/gauss', 'mpl_combat_fission': f'{os.getcwd()}/fission',
+                  'mpl_combat_dyson': f'{os.getcwd()}/dyson', 'mpl_combat_combustion': f'{os.getcwd()}/combustion'}
     mapDATA = {'mpl_combat_gauss': '{\"px\" : 187.951, \"py\" : -11.085, \"pz\" : 44.0900004,\"fovy\" : 1.6}',
                'mpl_combat_fission': '{\"px\" : 187.97, \"py\" : -10.73, \"pz\" : 44.0900004,\"fovy\" : 1.6}',
                'mpl_combat_dyson': '{\"px\" : 187.968, \"py\" : -11.186001, \"pz\" : 44.0900004,\"fovy\" : 1.6}',
@@ -788,66 +790,69 @@ async def camera_control():
                         await asyncio.sleep(5)
                         print('screen shot already taken')
                         continue
-                    else:
-                        if await war_room():
-                            for mapNAME, DATA in mapDATA.items():
-                                if mapNAME == apiData['map_name']:
-                                    """
-                                    Turn the hud off and sets camera to scoreboard location.
-                                    Start saving pictures of scoreboard and looping through player cameras.
-                                    Save location currently is based on sub folders of dyson, combustion, gauss, fission
-                                    """
-                                    screenTAKEN = True
-                                    folderlocation = f'{mapNAME}/{matchID}'
-                                    create_folders(matchID, mapNAME)
-                                    await posting_api(session, "http://127.0.0.1:6721/camera_transform", DATA)
-                                    data = {'enabled': False}
-                                    await posting_api(session, "http://127.0.0.1:6721/ui_visibility", json.dumps(data))
-                                    ws = simpleobsws.obsws(host='127.0.0.1', port=4450)
-                                    await ws.connect()
-                                    timeSCSHOT = time.time()
-                                    nameSCSHOT = f'{matchID}-{timeSCSHOT}'
-                                    await ws.call('TakeSourceScreenshot',
-                                                  {"sourceName": "Game Capture", "embedPictureFormat": "png",
-                                                   'saveToFilePath': f'{folderlocation}/{nameSCSHOT}.png'})
-                                    data = {'enabled': True}
-                                    await posting_api(session, "http://127.0.0.1:6721/ui_visibility", json.dumps(data))
-                                    for name, info in newstatDICT.items():
-                                        for k, v in info.items():
-                                            if k == 'num':
-                                                player_timeSCSHOT = time.time()
-                                                player_nameSCSHOT = f'{folderlocation}/{matchID}-{player_timeSCSHOT}'
-                                                playerSTAT.update({name: {'img': player_nameSCSHOT}})
-                                                data = {'mode': 'pov', 'num': v}
-                                                await posting_api(session, "http://127.0.0.1:6721/camera_mode",
-                                                                  json.dumps(data))
-                                                await asyncio.sleep(.05)
-                                                await ws.call('TakeSourceScreenshot',
-                                                              {"sourceName": "Game Capture",
-                                                               "embedPictureFormat": "png",
-                                                               'saveToFilePath':
-                                                                   f'{player_nameSCSHOT}.png'})
-                                    await ws.disconnect()
-                                    """
-                                    Begin the ocr process and creating and combining dictionaries. 
-                                    """
-                                    image = f'{folderlocation}/{nameSCSHOT}.png'
-                                    ocrSCOREBOARD(mapNAME, image)
-                                    ocrPERSONALSTATS()
-                                    for key in scoreboard_STATS:
-                                        if key in playstats_combine:
-                                            scoreboard_STATS[key].update(playstats_combine[key])
 
-                                    for key in tmp_renam2:
-                                        if key in tmp_rename:
-                                            tmp_renam2[key].update(tmp_rename[key])
-                                    if mapNAME in payload_list:
-                                        createstats_payload(mapNAME)
-                                    elif mapNAME in capture_point_list:
-                                        createstats_capture_point(mapNAME)
-                                    break
-                                else:
-                                    print(f'not this map {mapNAME}')
+                    if await war_room():
+                        for mapNAME, DATA in mapDATA.items():
+                            if mapNAME == apiData['map_name']:
+                                """
+                                Turn the hud off and sets camera to scoreboard location.
+                                Start saving pictures of scoreboard and looping through player cameras.
+                                Save location currently is based on sub folders of dyson, combustion, gauss, fission
+                                """
+                                screenTAKEN = True
+                                folderlocation = f'{folder_dir.get(mapNAME)}/{matchID}'
+                                create_folders(matchID, mapNAME)
+                                with open(f"{folderlocation}/api_{matchID}.json", "w") as f:
+                                    f.write(raw_api)
+
+                                await posting_api(session, "http://127.0.0.1:6721/camera_transform", DATA)
+                                data = {'enabled': False}
+                                await posting_api(session, "http://127.0.0.1:6721/ui_visibility", json.dumps(data))
+                                ws = simpleobsws.obsws(host='127.0.0.1', port=4450)
+                                await ws.connect()
+                                timeSCSHOT = time.time()
+                                nameSCSHOT = f'scoreboard_{timeSCSHOT}'
+                                await ws.call('TakeSourceScreenshot',
+                                              {"sourceName": "Game Capture", "embedPictureFormat": "png",
+                                               'saveToFilePath': f'{folderlocation}/{nameSCSHOT}.png'})
+                                data = {'enabled': True}
+                                await posting_api(session, "http://127.0.0.1:6721/ui_visibility", json.dumps(data))
+                                for name, info in newstatDICT.items():
+                                    for k, v in info.items():
+                                        if k == 'num':
+                                            player_timeSCSHOT = time.time()
+                                            player_nameSCSHOT = f'{folderlocation}/player.{v}_{player_timeSCSHOT}'
+                                            playerSTAT.update({name: {'img': player_nameSCSHOT}})
+                                            data = {'mode': 'pov', 'num': v}
+                                            await posting_api(session, "http://127.0.0.1:6721/camera_mode",
+                                                              json.dumps(data))
+                                            await asyncio.sleep(.05)
+                                            await ws.call('TakeSourceScreenshot',
+                                                          {"sourceName": "Game Capture",
+                                                           "embedPictureFormat": "png",
+                                                           'saveToFilePath':
+                                                               f'{player_nameSCSHOT}.png'})
+                                await ws.disconnect()
+                                """
+                                Begin the ocr process and creating and combining dictionaries. 
+                                """
+                                image = f'{folderlocation}/{nameSCSHOT}.png'
+                                ocrSCOREBOARD(mapNAME, image)
+                                ocrPERSONALSTATS()
+                                for key in scoreboard_STATS:
+                                    if key in playstats_combine:
+                                        scoreboard_STATS[key].update(playstats_combine[key])
+
+                                for key in tmp_renam2:
+                                    if key in tmp_rename:
+                                        tmp_renam2[key].update(tmp_rename[key])
+                                if mapNAME in payload_list:
+                                    createstats_payload(mapNAME)
+                                elif mapNAME in capture_point_list:
+                                    createstats_capture_point(mapNAME)
+                                break
+                            else:
+                                print(f'not this map {mapNAME}')
                 else:
                     """
                     Clear all dictionaries and set session_id 
