@@ -2,25 +2,25 @@ import PIL.Image
 import aiohttp
 import asyncio
 import simpleobsws
-import os
+from pathlib import Path
 import time
 import pytesseract
 import json
 import cv2
 from difflib import get_close_matches
 
-#Character name & number whitelist for OCR
+# Character name & number whitelist for OCR
 ocrCONFIG = '--psm 6, -c tessedit_char_whitelist=01234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.:-_'
 ocrCONFIG_NUM = '--psm 6, -c tessedit_char_whitelist=01234567890:'
 
-#General dictionaries for ocr results that get merged 
+# General dictionaries for ocr results that get merged
 newstatDICT = {}
 scoreboard_STATS = {}
 playerSTAT = {}
 playstats_combine = {}
 tmp_rename = {}
 tmp_renam2 = {}
-#This stores all names from the api that we use for a diff against ocr results in closeMatches
+# This stores all names from the api that we use for a diff against ocr results in closeMatches
 apiNAMES = []
 
 
@@ -673,19 +673,19 @@ def ocrPERSONALSTATS():
         tmp_renam2.update({newname[0]: stats})
 
 
-def create_folders():
+def create_folders(match_id, map_name):
     """
     WIP
     Currently changed my saving process into sub folders of the map names vs having all images saved in current working
     directory of the script
     """
-    dir_location = os.getcwd()
-    folder_dir = {'mpl_combat_gauss': f'{dir_location}/gauss', 'mpl_combat_fission': f'{dir_location}/fission',
-                  'mpl_combat_dyson': f'{dir_location}/dyson', 'mpl_combat_combustion': f'{dir_location}/combustion'}
-    for folder in folder_dir.values():
-        exists = os.path.exists(folder)
-        if not exists:
-            os.makedirs(folder)
+    folder_dir = {'mpl_combat_gauss': 'gauss', 'mpl_combat_fission': 'fission',
+                  'mpl_combat_dyson': 'dyson', 'mpl_combat_combustion': 'combustion', 'mpl_arena_a': 'arena'}
+    for mapN, map_dir in folder_dir.items():
+        if mapN == map_name:
+            if Path(f"{map_dir}/{match_id}").exists():
+                return True
+            Path(f"{map_dir}/{match_id}").mkdir(parents=True, exist_ok=True)
 
 
 def image_size(img):
@@ -771,8 +771,7 @@ async def camera_control():
     screenTAKEN = False
     payload_list = ['mpl_combat_gauss', 'mpl_combat_fission']
     capture_point_list = ['mpl_combat_dyson', 'mpl_combat_combustion']
-    folder_dir = {'mpl_combat_gauss': f'{os.getcwd()}/gauss', 'mpl_combat_fission': f'{os.getcwd()}/fission',
-                  'mpl_combat_dyson': f'{os.getcwd()}/dyson', 'mpl_combat_combustion': f'{os.getcwd()}/combustion'}
+
     mapDATA = {'mpl_combat_gauss': '{\"px\" : 187.951, \"py\" : -11.085, \"pz\" : 44.0900004,\"fovy\" : 1.6}',
                'mpl_combat_fission': '{\"px\" : 187.97, \"py\" : -10.73, \"pz\" : 44.0900004,\"fovy\" : 1.6}',
                'mpl_combat_dyson': '{\"px\" : 187.968, \"py\" : -11.186001, \"pz\" : 44.0900004,\"fovy\" : 1.6}',
@@ -799,7 +798,8 @@ async def camera_control():
                                     Save location currently is based on sub folders of dyson, combustion, gauss, fission
                                     """
                                     screenTAKEN = True
-                                    folderlocation = folder_dir.get(mapNAME)
+                                    folderlocation = f'{mapNAME}/{matchID}'
+                                    create_folders(matchID, mapNAME)
                                     await posting_api(session, "http://127.0.0.1:6721/camera_transform", DATA)
                                     data = {'enabled': False}
                                     await posting_api(session, "http://127.0.0.1:6721/ui_visibility", json.dumps(data))
