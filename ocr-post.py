@@ -38,10 +38,12 @@ async def posting_api(session, url, data):
 
 
 async def fetch_api(session, url):
+    global raw_api
     try:
         async with session.get(url) as response:
             if response.status == 200 or response.status == 500:
                 api = await response.json()
+                raw_api = await response.text()
                 return api
             else:
                 print(response.status)
@@ -679,6 +681,9 @@ def create_folders(match_id, map_name):
     WIP
     Currently changed my saving process into sub folders of the map names vs having all images saved in current working
     directory of the script
+
+    :param match_id: specify current match id
+    :param map_name: specify current map name
     """
     folder_dir = {'mpl_combat_gauss': 'gauss', 'mpl_combat_fission': 'fission',
                   'mpl_combat_dyson': 'dyson', 'mpl_combat_combustion': 'combustion', 'mpl_arena_a': 'arena'}
