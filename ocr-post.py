@@ -72,6 +72,7 @@ def ocr_process(img_CORDS, ocrCONFIG):
     resized = cv2.resize(img_CORDS, dim, interpolation=cv2.INTER_AREA)
     gray = cv2.cvtColor(resized, cv2.COLOR_BGR2GRAY)
     invert = cv2.bitwise_not(gray)
+    pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
     text = pytesseract.image_to_string(invert, lang="eng",
                                        config=ocrCONFIG)
     replace_string = text.replace('\n', "")
@@ -83,6 +84,7 @@ def ocr_process_playerSTATS(img_CORDS, ocrCONFIG):
     width = int(img_CORDS.shape[1] * scale_percent / 100)
     height = int(img_CORDS.shape[0] * scale_percent / 100)
     dim = (width, height)
+    print(dim)
     resized = cv2.resize(img_CORDS, dim, interpolation=cv2.INTER_AREA)
     gray = cv2.cvtColor(resized, cv2.COLOR_BGR2GRAY)
     (thresh, black_white) = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)
@@ -711,7 +713,7 @@ def image_blank(img):
         return False
 
 
-async def war_room():
+async def celebration_room(apiData):
     """
     Main function is to return if ALL players have spawned into the celebration room to indicate game is over.
     Also serves the purpose of generating apiName list with correct names and filling in a dictionary that has all
@@ -719,52 +721,50 @@ async def war_room():
     :return: Loop through to see if all players in dictionary are true
     """
     fix = {}
-    async with aiohttp.ClientSession() as session:
-        apiData = await fetch_api(session, "http://127.0.0.1:6721/session")
-        if apiData is None:
-            return False
-        newstatDICT.clear()
-        apiNAMES.clear()
-        for teamIndex in range(0, len(apiData["teams"])):
-            if "players" in apiData["teams"][teamIndex]:
-                teamPlayers = apiData["teams"][teamIndex]["players"]
-                for teamPlayer in range(0, len(teamPlayers)):
-                    if "players" in apiData["teams"][teamIndex] != apiData["teams"][2]:
-                        x = teamPlayers[teamPlayer]["head"]["position"][0]
-                        y = teamPlayers[teamPlayer]["head"]["position"][1]
-                        z = teamPlayers[teamPlayer]["head"]["position"][2]
-                        name = teamPlayers[teamPlayer]['name']
-                        apiNAMES.append(name)
-                        userid = teamPlayers[teamPlayer]['userid']
-                        #check if player is in celebration room
-                        warROOM = 176.90 <= x <= 199.10 and -16.70 <= y <= -7.85 and 16.70 <= z <= 46.70
-                        fix.update({userid: warROOM})
-                        #player number used to write camera position
-                        if teamIndex == 0:
-                            if teamPlayer == 0:
-                                newstatDICT.update({name: {'userid': userid, 'num': 6, 'team': teamIndex}})
-                            elif teamPlayer == 1:
-                                newstatDICT.update({name: {'userid': userid, 'num': 7, 'team': teamIndex}})
-                            elif teamPlayer == 2:
-                                newstatDICT.update({name: {'userid': userid, 'num': 8, 'team': teamIndex}})
-                            elif teamPlayer == 3:
-                                newstatDICT.update({name: {'userid': userid, 'num': 9, 'team': teamIndex}})
-                        elif teamIndex == 1:
-                            if teamPlayer == 0:
-                                newstatDICT.update({name: {'userid': userid, 'num': 1, 'team': teamIndex}})
-                            elif teamPlayer == 1:
-                                newstatDICT.update({name: {'userid': userid, 'num': 2, 'team': teamIndex}})
-                            elif teamPlayer == 2:
-                                newstatDICT.update({name: {'userid': userid, 'num': 3, 'team': teamIndex}})
-                            elif teamPlayer == 3:
-                                newstatDICT.update({name: {'userid': userid, 'num': 4, 'team': teamIndex}})
-        if all(value == 1 for value in fix.values()):
-            return True
-        else:
-            return False
+    if apiData is None:
+        return False
+    newstatDICT.clear()
+    apiNAMES.clear()
+    for teamIndex in range(0, len(apiData["teams"])):
+        if "players" in apiData["teams"][teamIndex]:
+            teamPlayers = apiData["teams"][teamIndex]["players"]
+            for teamPlayer in range(0, len(teamPlayers)):
+                if "players" in apiData["teams"][teamIndex] != apiData["teams"][2]:
+                    x = teamPlayers[teamPlayer]["head"]["position"][0]
+                    y = teamPlayers[teamPlayer]["head"]["position"][1]
+                    z = teamPlayers[teamPlayer]["head"]["position"][2]
+                    name = teamPlayers[teamPlayer]['name']
+                    apiNAMES.append(name)
+                    userid = teamPlayers[teamPlayer]['userid']
+                    #check if player is in celebration room
+                    celebROOM = 176.90 <= x <= 199.10 and -16.70 <= y <= -7.85 and 16.70 <= z <= 46.70
+                    fix.update({userid: celebROOM})
+                    #player number used to write camera position
+                    if teamIndex == 0:
+                        if teamPlayer == 0:
+                            newstatDICT.update({name: {'userid': userid, 'num': 6, 'team': teamIndex}})
+                        elif teamPlayer == 1:
+                            newstatDICT.update({name: {'userid': userid, 'num': 7, 'team': teamIndex}})
+                        elif teamPlayer == 2:
+                            newstatDICT.update({name: {'userid': userid, 'num': 8, 'team': teamIndex}})
+                        elif teamPlayer == 3:
+                            newstatDICT.update({name: {'userid': userid, 'num': 9, 'team': teamIndex}})
+                    elif teamIndex == 1:
+                        if teamPlayer == 0:
+                            newstatDICT.update({name: {'userid': userid, 'num': 1, 'team': teamIndex}})
+                        elif teamPlayer == 1:
+                            newstatDICT.update({name: {'userid': userid, 'num': 2, 'team': teamIndex}})
+                        elif teamPlayer == 2:
+                            newstatDICT.update({name: {'userid': userid, 'num': 3, 'team': teamIndex}})
+                        elif teamPlayer == 3:
+                            newstatDICT.update({name: {'userid': userid, 'num': 4, 'team': teamIndex}})
+    if all(value == 1 for value in fix.values()):
+        return True
+    else:
+        return False
 
 
-async def camera_control():
+async def camera_control(ws_portNum):
     """
     Start by checking if any api is None and if so wait and try against in a few seconds. Next step is to check if the
     current match is the same by comparing session_id and if not storing the new current value. Begin the process of
@@ -796,74 +796,76 @@ async def camera_control():
                         print('screen shot already taken')
                         continue
 
-                    if await war_room():
-                        for mapNAME, DATA in mapDATA.items():
-                            if mapNAME == apiData['map_name']:
-                                """
-                                Turn the hud off and sets camera to scoreboard location.
-                                Start saving pictures of scoreboard and looping through player cameras.
-                                Save location currently is based on sub folders of dyson, combustion, gauss, fission
-                                """
-                                screenTAKEN = True
-                                folderlocation = f'{folder_dir.get(mapNAME)}/{matchID}'
-                                create_folders(matchID, mapNAME)
-                                with open(f"{folderlocation}/api_{matchID}.json", "w") as f:
-                                    f.write(raw_api)
+                    if await celebration_room(apiData):
+                        if apiData['map_name'] in mapDATA.keys():
+                            """
+                            Turn the hud off and sets camera to scoreboard location.
+                            Start saving pictures of scoreboard and looping through player cameras.
+                            Save location currently is based on sub folders of dyson, combustion, gauss, fission
+                            """
+                            screenTAKEN = True
+                            folderlocation = f'{folder_dir.get(apiData["map_name"])}/{matchID}'
+                            create_folders(matchID, apiData["map_name"])
+                            with open(f"{folderlocation}/api_{matchID}.json", "w") as f:
+                                f.write(raw_api)
+                            # set position of camera and disable the hud
+                            await posting_api(session, "http://127.0.0.1:6721/camera_transform", mapDATA.get(apiData["map_name"]))
+                            data = {'enabled': False}
+                            await posting_api(session, "http://127.0.0.1:6721/ui_visibility", json.dumps(data))
+                            # take screenshot and save
+                            timeSCSHOT = time.time()
+                            nameSCSHOT = f'scoreboard_{timeSCSHOT}'
+                            request = simpleobsws.Request('SaveSourceScreenshot',
+                                                          {"sourceName": "echo", "imageFormat": "png",
+                                                           'imageFilePath': f'{folderlocation}/{nameSCSHOT}.png'})
+                            await obs_screenshots(ws_portNum, request)
+                            # re-enable the hud
+                            data = {'enabled': True}
+                            await posting_api(session, "http://127.0.0.1:6721/ui_visibility", json.dumps(data))
+                            for name, info in newstatDICT.items():
+                                for k, v in info.items():
+                                    if k == 'num':
+                                        player_timeSCSHOT = time.time()
+                                        player_nameSCSHOT = f'{folderlocation}/player.{v}_{player_timeSCSHOT}'
+                                        playerSTAT.update({name: {'img': player_nameSCSHOT}})
+                                        data = {'mode': 'pov', 'num': v}
+                                        await posting_api(session, "http://127.0.0.1:6721/camera_mode",
+                                                          json.dumps(data))
+                                        await asyncio.sleep(.05)
+                                        request = simpleobsws.Request('SaveSourceScreenshot',
+                                                                      {"sourceName": "echo",
+                                                                       "imageFormat": "png",
+                                                                       'imageFilePath':
+                                                                           f'{player_nameSCSHOT}.png'})
+                                        await obs_screenshots(ws_portNum, request)
+                            """
+                            Begin the ocr process and creating and combining dictionaries. 
+                            """
+                            image = f'{folderlocation}/{nameSCSHOT}.png'
+                            ocrSCOREBOARD(apiData["map_name"], image)
+                            ocrPERSONALSTATS()
+                            for key in scoreboard_STATS:
+                                if key in playstats_combine:
+                                    scoreboard_STATS[key].update(playstats_combine[key])
 
-                                await posting_api(session, "http://127.0.0.1:6721/camera_transform", DATA)
-                                data = {'enabled': False}
-                                await posting_api(session, "http://127.0.0.1:6721/ui_visibility", json.dumps(data))
-                                ws = simpleobsws.obsws(host='127.0.0.1', port=4450)
-                                await ws.connect()
-                                timeSCSHOT = time.time()
-                                nameSCSHOT = f'scoreboard_{timeSCSHOT}'
-                                await ws.call('TakeSourceScreenshot',
-                                              {"sourceName": "Game Capture", "embedPictureFormat": "png",
-                                               'saveToFilePath': f'{folderlocation}/{nameSCSHOT}.png'})
-                                data = {'enabled': True}
-                                await posting_api(session, "http://127.0.0.1:6721/ui_visibility", json.dumps(data))
-                                for name, info in newstatDICT.items():
-                                    for k, v in info.items():
-                                        if k == 'num':
-                                            player_timeSCSHOT = time.time()
-                                            player_nameSCSHOT = f'{folderlocation}/player.{v}_{player_timeSCSHOT}'
-                                            playerSTAT.update({name: {'img': player_nameSCSHOT}})
-                                            data = {'mode': 'pov', 'num': v}
-                                            await posting_api(session, "http://127.0.0.1:6721/camera_mode",
-                                                              json.dumps(data))
-                                            await asyncio.sleep(.05)
-                                            await ws.call('TakeSourceScreenshot',
-                                                          {"sourceName": "Game Capture",
-                                                           "embedPictureFormat": "png",
-                                                           'saveToFilePath':
-                                                               f'{player_nameSCSHOT}.png'})
-                                await ws.disconnect()
-                                """
-                                Begin the ocr process and creating and combining dictionaries. 
-                                """
-                                image = f'{folderlocation}/{nameSCSHOT}.png'
-                                ocrSCOREBOARD(mapNAME, image)
-                                ocrPERSONALSTATS()
-                                for key in scoreboard_STATS:
-                                    if key in playstats_combine:
-                                        scoreboard_STATS[key].update(playstats_combine[key])
-
-                                for key in tmp_renam2:
-                                    if key in tmp_rename:
-                                        tmp_renam2[key].update(tmp_rename[key])
-                                if mapNAME in payload_list:
-                                    createstats_payload(mapNAME)
-                                elif mapNAME in capture_point_list:
-                                    createstats_capture_point(mapNAME)
-                                break
-                            else:
-                                print(f'not this map {mapNAME}')
+                            for key in tmp_renam2:
+                                if key in tmp_rename:
+                                    tmp_renam2[key].update(tmp_rename[key])
+                            if apiData["map_name"] in payload_list:
+                                createstats_payload(apiData["map_name"])
+                            elif apiData["map_name"] in capture_point_list:
+                                print(tmp_renam2)
+                                createstats_capture_point(apiData["map_name"])
+                            
+                        else:
+                            print(f'Level {apiData["map_name"]} not currently supported')
                 else:
                     """
                     Clear all dictionaries and set session_id 
                     wait before continuing loop as people spawn by default into it once the match starts and will
                     auto start the sequence of taking photos even though game has not ended
                     """
+                    print(f'New sessionID: {apiData["sessionid"]}')
                     matchID = apiData["sessionid"]
                     screenTAKEN = False
                     newstatDICT.clear()
@@ -881,10 +883,26 @@ async def camera_control():
                 pass
 
 
+async def obs_screenshots(port_num, request):
+    ws = simpleobsws.WebSocketClient(url=f"ws://localhost:{port_num}")
+    await ws.connect()
+    await ws.wait_until_identified()
+    await ws.call(request)
+    await ws.disconnect()
+
+
 async def moon():
-    ka = loop.create_task(camera_control())
-    await asyncio.wait([ka])
+    default_options = input('Default Websocket port(4450): y/n')
+    if default_options == 'y' or default_options.upper() == 'Y':
+        await asyncio.create_task(camera_control(ws_portNum='4450'))
+    else:
+        while True:
+            websocket_port = input('Enter websocket port number')
+            if len(websocket_port) == 4 and websocket_port.isdigit():
+                await asyncio.create_task(camera_control(websocket_port))
+                break
+            else:
+                print('invalid port number')
 
 
-loop = asyncio.get_event_loop()
-loop.run_until_complete(moon())
+asyncio.run(moon())
