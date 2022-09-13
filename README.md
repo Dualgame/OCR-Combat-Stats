@@ -4,7 +4,7 @@ Requirements:
 
 * [OBS](https://obsproject.com/)
 
-* [OBS websocket](https://github.com/obsproject/obs-websocket) + [simpleobs4.x](https://github.com/IRLToolkit/simpleobsws/tree/simpleobsws-4.x)
+* [OBS websocket](https://github.com/obsproject/obs-websocket) + [simpleobs](https://github.com/IRLToolkit/simpleobsws/tree/master)
 
 * [Tesseract OCR](https://github.com/UB-Mannheim/tesseract/wiki)
 
