@@ -30,9 +30,9 @@ async def posting_api(session, url, data):
         async with session.post(url, data=data):
             pass
     except aiohttp.ClientConnectorError as e:
-        print('Connection Error', str(e))
+        print('Connection Error ', str(e))
     except aiohttp.client_exceptions.ServerDisconnectedError as e:
-        print('Server disconnected', str(e))
+        print('Server disconnected ', str(e))
     except aiohttp.client_exceptions.ClientOSError as e:
         print('Client ', str(e))
 
